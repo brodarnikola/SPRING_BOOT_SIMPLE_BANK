@@ -14,8 +14,8 @@ public class ScheduledTask {
     @Autowired
     TransactionService transactionService;
 
-    @Scheduled(cron = "0 0 0 1 * *")
+   /* @Scheduled(cron = "0 0 0 1 * *")
     public void task1() {
         accountService.getAllAccounts().forEach(account -> accountService.getLastMonthTurnOver(account, transactionService));
-    }
+    }*/
 }

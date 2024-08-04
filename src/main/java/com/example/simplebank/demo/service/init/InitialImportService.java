@@ -51,9 +51,9 @@ public class InitialImportService implements Runnable {
                     accountService.saveAccountIfNew(Account.builder()
                             .accountNumber(transaction.getSenderAccount())
                             .build());
-                    accountService.saveAccountIfNew(Account.builder()
+                    /*accountService.saveAccountIfNew(Account.builder()
                             .accountNumber(transaction.getSenderAccount())
-                            .build());
+                            .build());*/
                 } finally {
                     latch.countDown();
                 }

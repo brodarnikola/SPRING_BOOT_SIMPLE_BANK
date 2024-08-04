@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +32,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void saveAccountIfNew(Account account) {
-        if (Objects.isNull(accountRepository.findByAccountName(account.getAccountNumber()))) {
+        Optional<Account> existingAccount = accountRepository.findByAccountNumber(account.getAccountNumber());
+        if (!existingAccount.isPresent() && Objects.isNull(accountRepository.findByAccountName(account.getAccountNumber()))) {
             accountRepository.save(account);
         }
     }
