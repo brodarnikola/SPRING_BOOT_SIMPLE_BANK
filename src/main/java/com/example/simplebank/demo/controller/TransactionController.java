@@ -6,6 +6,8 @@ import com.example.simplebank.demo.model.Transaction;
 import com.example.simplebank.demo.service.implementation.CustomerServiceImpl;
 import com.example.simplebank.demo.service.implementation.TransactionServiceImpl;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,14 @@ public class TransactionController {
     @Autowired
     CustomerServiceImpl customerService;
 
+    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+
     @GetMapping("/transaction/history/{customerId}")
     public ResponseEntity<List<Transaction>> getTransactionHistory(@Valid @PathVariable Integer customerId,
                                                                    @RequestParam(required = false, name = FILTER_NAME) String filterValue) {
+
+        logger.info("Received customerId: {}", customerId);
+        logger.info("Received filterValue: {}", filterValue);
 
         Optional<List<Transaction>> transactionHistory = Optional.empty();
         Optional<Customer> customerById = customerService.findCustomerById(customerId);

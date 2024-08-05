@@ -1,7 +1,6 @@
 package com.example.simplebank.demo.service.implementation;
 
 import com.example.simplebank.demo.dao.TransactionRepository;
-import com.example.simplebank.demo.model.Account;
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.model.Transaction;
 import com.example.simplebank.demo.model.dto.AccountDTO;
@@ -137,29 +136,23 @@ public class TransactionServiceImpl implements TransactionService {
         AccountDTO sender = accountDtoService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(AccountDTO::new);
         AccountDTO receiver = accountDtoService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(AccountDTO::new);
 
-        Customer senderCustomer = new Customer();
-        senderCustomer.setCustomerId(sender.getCustomer().getCustomerId());
-        senderCustomer.setName(sender.getCustomer().getName());
-        senderCustomer.setAddress(sender.getCustomer().getAddress());
-        senderCustomer.setEmail(sender.getCustomer().getEmail());
+        setCustomerForAccount(sender);
 
-        sender.setCustomer(senderCustomer);
-
-        Customer receiverCustomer = new Customer();
-        receiverCustomer.setCustomerId(receiver.getCustomer().getCustomerId());
-        receiverCustomer.setName(receiver.getCustomer().getName());
-        receiverCustomer.setAddress(receiver.getCustomer().getAddress());
-        receiverCustomer.setEmail(receiver.getCustomer().getEmail());
-
-        receiver.setCustomer(receiverCustomer);
+        setCustomerForAccount(receiver);
 
         sender.setBalance(sender.getBalance().subtract(transaction.getAmount()));
         receiver.setBalance(receiver.getBalance().add(transaction.getAmount()));
         accountDtoService.save(sender);
         accountDtoService.save(receiver);
-//        accountService.saveAccount(sender);
-//        accountService.saveAccount(receiver);
+    }
 
+    private void setCustomerForAccount(AccountDTO sender) {
+        Customer senderCustomer = new Customer();
+        senderCustomer.setCustomerId(sender.getCustomer().getCustomerId());
+        senderCustomer.setName(sender.getCustomer().getName());
+        senderCustomer.setAddress(sender.getCustomer().getAddress());
+        senderCustomer.setEmail(sender.getCustomer().getEmail());
+        sender.setCustomer(senderCustomer);
     }
 
 
