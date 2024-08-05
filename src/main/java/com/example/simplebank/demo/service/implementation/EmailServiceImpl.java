@@ -2,6 +2,7 @@ package com.example.simplebank.demo.service.implementation;
 
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.model.Transaction;
+import com.example.simplebank.demo.model.dto.CustomerResponseDTO;
 import com.example.simplebank.demo.service.interfaces.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -33,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmailImpl(Transaction transaction, String accountNumber, Customer customer, boolean sent, BigDecimal currentBalance) {
+    public void sendEmailImpl(Transaction transaction, String accountNumber, CustomerResponseDTO customer, boolean sent, BigDecimal currentBalance) {
 
         BigDecimal oldBalance;
         String addedTaken = sent ? "taken from" : "added to";

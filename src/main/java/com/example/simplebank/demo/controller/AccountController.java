@@ -1,6 +1,9 @@
 package com.example.simplebank.demo.controller;
 
 import com.example.simplebank.demo.model.Account;
+import com.example.simplebank.demo.model.dto.AccountDTO;
+import com.example.simplebank.demo.model.dto.AccountResponseDTO;
+import com.example.simplebank.demo.service.interfaces.AccountDtoService;
 import com.example.simplebank.demo.service.interfaces.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +16,11 @@ import java.util.List;
 public class AccountController {
 
     @Autowired
-    AccountService accountService;
+    AccountDtoService accountService;
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAccounts() {
-        List<Account> accounts = accountService.getAllAccounts();
+    public ResponseEntity<List<AccountResponseDTO>> getAccounts() {
+        List<AccountResponseDTO> accounts = accountService.getAllAccounts();
         return ResponseEntity.ok(accounts);
     }
 }

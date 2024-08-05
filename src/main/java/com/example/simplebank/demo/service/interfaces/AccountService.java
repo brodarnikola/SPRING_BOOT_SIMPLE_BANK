@@ -12,7 +12,6 @@ public interface AccountService {
 
     Account saveAccount(Account account);
 
-    void saveAccountIfNew(Account account);
 
     List<Account> getAllAccounts();
 

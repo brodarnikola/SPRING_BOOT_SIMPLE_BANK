@@ -1,3 +1,4 @@
+/*
 package com.example.simplebank.demo.service.init;
 
 import com.example.simplebank.demo.model.Account;
@@ -66,3 +67,4 @@ public class InitDataService {
     }
 
 }
+*/
