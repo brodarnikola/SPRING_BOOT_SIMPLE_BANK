@@ -13,5 +13,9 @@ public interface AccountService {
 
     Optional<Account> findByAccountNumber(String accountNumber);
 
+    void getLastMonthTurnOver(Account account, TransactionService transactionService);
+
+    List<Account> getAllOriginalAccounts();
+
     List<AccountResponseDTO> getAllAccounts();
 }

@@ -36,17 +36,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public Integer processTransaction(Transaction transaction) {
         Transaction trans = transactionRepository.save(transaction);
-        /*Account sender = accountService.getAccountByNumber(transaction.getSenderAccount());
-        Account receiver = accountService.getAccountByNumber(transaction.getReceiverAccount());*/
-        // Set up your default Account here
-        /*Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
-        Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);*/
+
         Optional<Account> senderAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO sender = getAccountResponseDTO(senderAccount);
         Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO receiver = getAccountResponseDTO(receiverAccount);
+
         updateBalances(transaction);
-        handleBothEmails(transaction, sender, receiver);
+        sendEmailsToReceiverAndSender(transaction, sender, receiver);
         return trans.getTransactionId();
     }
 
@@ -56,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
             sender.setAccountId(account.get().getAccountId());
             sender.setAccountNumber(account.get().getAccountNumber());
             sender.setBalance(account.get().getBalance());
-            sender.setPastMonthTurnover(account.get().getPastMonthTurnover());
+            sender.setPastMonthTurnover(account.get().getPreviousMonthTurnover());
 
             CustomerResponseDTO customerDTO = new CustomerResponseDTO();
             customerDTO.setCustomerId(account.get().getCustomer().getCustomerId());
@@ -123,7 +120,7 @@ public class TransactionServiceImpl implements TransactionService {
         return Optional.of(transactions);
     }
 
-    private void handleBothEmails(Transaction transaction, AccountResponseDTO sender, AccountResponseDTO receiver) {
+    private void sendEmailsToReceiverAndSender(Transaction transaction, AccountResponseDTO sender, AccountResponseDTO receiver) {
         emailService.sendEmailImpl(transaction, sender.getAccountNumber(), sender.getCustomer(), true, sender.getBalance());
         emailService.sendEmailImpl(transaction, receiver.getAccountNumber(), receiver.getCustomer(), false, receiver.getBalance());
     }

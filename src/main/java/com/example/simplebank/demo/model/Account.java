@@ -20,7 +20,7 @@ public class Account {
     @Column(unique = true)
     private String accountNumber;
     private BigDecimal balance = new BigDecimal(0);
-    private BigDecimal pastMonthTurnover = new BigDecimal(0);
+    private BigDecimal previousMonthTurnover = new BigDecimal(0);
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
 //    @JsonIgnoreProperties("accounts")

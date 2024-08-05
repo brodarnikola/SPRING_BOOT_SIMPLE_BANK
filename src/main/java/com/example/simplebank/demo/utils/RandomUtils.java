@@ -2,6 +2,7 @@ package com.example.simplebank.demo.utils;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
     private static final Random RANDOM = new Random();
@@ -10,7 +11,8 @@ public class RandomUtils {
         if (list == null || list.isEmpty()) {
             throw new IllegalArgumentException("The list must not be null or empty");
         }
-        int index = RANDOM.nextInt(list.size());
+        int index =  ThreadLocalRandom.current().nextInt(list.size());
         return list.get(index);
     }
 }
+
