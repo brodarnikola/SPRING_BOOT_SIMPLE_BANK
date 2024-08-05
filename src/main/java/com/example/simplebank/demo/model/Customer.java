@@ -1,7 +1,5 @@
 package com.example.simplebank.demo.model;
 
-import com.example.simplebank.demo.model.dto.AccountDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -28,9 +26,5 @@ public class Customer {
     private String email;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonManagedReference
-    List<AccountDTO> accounts = new ArrayList<>();
-
-    public void addAccount(AccountDTO account) {
-        accounts.add(account);
-    }
+    List<Account> accounts = new ArrayList<>();
 }

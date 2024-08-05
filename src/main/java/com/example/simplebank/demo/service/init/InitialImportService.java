@@ -4,10 +4,8 @@ import com.example.simplebank.demo.model.Account;
 import com.example.simplebank.demo.model.Currency;
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.model.Transaction;
-import com.example.simplebank.demo.model.dto.AccountDTO;
 import com.example.simplebank.demo.model.dto.AccountResponseDTO;
 import com.example.simplebank.demo.service.implementation.CustomerServiceImpl;
-import com.example.simplebank.demo.service.interfaces.AccountDtoService;
 import com.example.simplebank.demo.service.interfaces.AccountService;
 import com.example.simplebank.demo.service.interfaces.TransactionService;
 import com.example.simplebank.demo.utils.RandomUtils;
@@ -120,7 +118,7 @@ public class InitialImportService implements Runnable {
     @Autowired
     TransactionService transactionService;
     @Autowired
-    AccountDtoService accountDtoService;
+    AccountService accountService;
     @Autowired
     CustomerServiceImpl customerService;
 
@@ -133,7 +131,7 @@ public class InitialImportService implements Runnable {
 
         List<Transaction> transactions = importAllTransactions(FILE_PATH);
         List<Customer> customers = customerService.createDummyCustomers(NUMBER_OF_CUSTOMERS);
-        Set<AccountDTO> accounts = retrieveUniqueAccountsFromTransactions(transactions);
+        Set<Account> accounts = retrieveUniqueAccountsFromTransactions(transactions);
 
         setCustomerAccounts(customers,accounts);
 
@@ -156,21 +154,21 @@ public class InitialImportService implements Runnable {
         }
         executor.shutdown();
         List<Customer> customerList2 = customerService.findAllCustomers();
-        accountDtoService.saveAll(accounts);
-        List<AccountResponseDTO> accountDTOList = accountDtoService.getAllAccounts() ;
+        accountService.saveAll(accounts);
+        List<AccountResponseDTO> accountDTOList = accountService.getAllAccounts() ;
 
         List<Customer> customerList = customerService.findAllCustomers();
 
     }
 
 
-    private void processTransaction(Transaction t, Set<AccountDTO> accounts) {
+    private void processTransaction(Transaction t, Set<Account> accounts) {
 
-        Optional<AccountDTO> sender = accounts.stream()
+        Optional<Account> sender = accounts.stream()
                 .filter(a -> a.getAccountNumber().equals(t.getSenderAccount()))
                 .findFirst();
 
-        Optional<AccountDTO> receiver = accounts.stream()
+        Optional<Account> receiver = accounts.stream()
                 .filter(a -> a.getAccountNumber().equals(t.getReceiverAccount()))
                 .findFirst();
 
@@ -183,11 +181,11 @@ public class InitialImportService implements Runnable {
     }
 
 
-    private Set<AccountDTO> retrieveUniqueAccountsFromTransactions(List<Transaction> transactions) {
+    private Set<Account> retrieveUniqueAccountsFromTransactions(List<Transaction> transactions) {
         return transactions.stream()
                 .flatMap(t -> Stream.of(
-                        new AccountDTO(t.getSenderAccount()),
-                        new AccountDTO(t.getReceiverAccount())
+                        new Account(t.getSenderAccount()),
+                        new Account(t.getReceiverAccount())
                 ))
                 .collect(Collectors.toSet());
     }
@@ -217,7 +215,7 @@ public class InitialImportService implements Runnable {
 
         return transactions;
     }
-    private void setCustomerAccounts(List<Customer> customers, Set<AccountDTO> accounts) {
+    private void setCustomerAccounts(List<Customer> customers, Set<Account> accounts) {
         accounts.forEach(a -> a.setCustomer(RandomUtils.getRandomItem(customers)));
     }
 }

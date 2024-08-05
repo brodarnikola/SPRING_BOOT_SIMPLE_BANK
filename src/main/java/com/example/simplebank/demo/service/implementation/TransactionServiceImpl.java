@@ -1,12 +1,11 @@
 package com.example.simplebank.demo.service.implementation;
 
 import com.example.simplebank.demo.dao.TransactionRepository;
+import com.example.simplebank.demo.model.Account;
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.model.Transaction;
-import com.example.simplebank.demo.model.dto.AccountDTO;
 import com.example.simplebank.demo.model.dto.AccountResponseDTO;
 import com.example.simplebank.demo.model.dto.CustomerResponseDTO;
-import com.example.simplebank.demo.service.interfaces.AccountDtoService;
 import com.example.simplebank.demo.service.interfaces.AccountService;
 import com.example.simplebank.demo.service.interfaces.EmailService;
 import com.example.simplebank.demo.service.interfaces.TransactionService;
@@ -29,11 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
     @Autowired
     private EmailService emailService;
-    @Autowired
-    private AccountService accountService;
 
     @Autowired
-    private AccountDtoService accountDtoService;
+    private AccountService accountService;
 
     @Override
     @Transactional
@@ -41,19 +38,19 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction trans = transactionRepository.save(transaction);
         /*Account sender = accountService.getAccountByNumber(transaction.getSenderAccount());
         Account receiver = accountService.getAccountByNumber(transaction.getReceiverAccount());*/
-        // Set up your default AccountDTO here
-        /*AccountDTO sender = accountDtoService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(AccountDTO::new);
-        AccountDTO receiver = accountDtoService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(AccountDTO::new);*/
-        Optional<AccountDTO> senderAccount = accountDtoService.findByAccountNumber(transaction.getSenderAccount());
+        // Set up your default Account here
+        /*Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
+        Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);*/
+        Optional<Account> senderAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO sender = getAccountResponseDTO(senderAccount);
-        Optional<AccountDTO> receiverAccount = accountDtoService.findByAccountNumber(transaction.getSenderAccount());
+        Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO receiver = getAccountResponseDTO(receiverAccount);
         updateBalances(transaction);
         handleBothEmails(transaction, sender, receiver);
         return trans.getTransactionId();
     }
 
-    private static AccountResponseDTO getAccountResponseDTO(Optional<AccountDTO> account) {
+    private static AccountResponseDTO getAccountResponseDTO(Optional<Account> account) {
         AccountResponseDTO sender = new AccountResponseDTO();
         if (account.isPresent()) {
             sender.setAccountId(account.get().getAccountId());
@@ -133,8 +130,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     private void updateBalances(Transaction transaction) {
 
-        AccountDTO sender = accountDtoService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(AccountDTO::new);
-        AccountDTO receiver = accountDtoService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(AccountDTO::new);
+        Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
+        Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);
 
         setCustomerForAccount(sender);
 
@@ -142,11 +139,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         sender.setBalance(sender.getBalance().subtract(transaction.getAmount()));
         receiver.setBalance(receiver.getBalance().add(transaction.getAmount()));
-        accountDtoService.save(sender);
-        accountDtoService.save(receiver);
+        accountService.save(sender);
+        accountService.save(receiver);
     }
 
-    private void setCustomerForAccount(AccountDTO sender) {
+    private void setCustomerForAccount(Account sender) {
         Customer senderCustomer = new Customer();
         senderCustomer.setCustomerId(sender.getCustomer().getCustomerId());
         senderCustomer.setName(sender.getCustomer().getName());
