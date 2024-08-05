@@ -42,7 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
         Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO receiver = getAccountResponseDTO(receiverAccount);
 
-        updateBalances(transaction);
+        updateAccountAmount(transaction);
         sendEmailsToReceiverAndSender(transaction, sender, receiver);
         return trans.getTransactionId();
     }
@@ -81,10 +81,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Optional<List<Transaction>> getTransactionHistoryFiltered(Customer customer, String filter_name, String filter_value) {
-        if (filter_name.equalsIgnoreCase(FILTER_NAME)) {
-            switch (filter_value.toUpperCase()) {
+    public Optional<List<Transaction>> getTransactionHistoryFiltered(Customer customer, String filterName, String filterValue) {
+        if (filterName.equalsIgnoreCase(FILTER_NAME)) {
+            switch (filterValue.toUpperCase()) {
                 case FILTER_SENDER:
+                    // fetch, get sender transactions
                     return fetchSenderTransactions(customer);
                 case FILTER_RECEIVER:
                     return fetchReceiverTransactions(customer);
@@ -92,16 +93,6 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
         return Optional.of(new ArrayList<>());
-    }
-
-    @Override
-    public List<Transaction> fetchReceiverTransactionsForAccount(String account) {
-        return transactionRepository.findByReceiverAccount(account);
-    }
-
-    @Override
-    public List<Transaction> fetchSenderTransactionsForAccount(String account) {
-        return transactionRepository.findBySenderAccount(account);
     }
 
     @Override
@@ -120,12 +111,22 @@ public class TransactionServiceImpl implements TransactionService {
         return Optional.of(transactions);
     }
 
+    @Override
+    public List<Transaction> fetchReceiverTransactionsForAccount(String account) {
+        return transactionRepository.findByReceiverAccount(account);
+    }
+
+    @Override
+    public List<Transaction> fetchSenderTransactionsForAccount(String account) {
+        return transactionRepository.findBySenderAccount(account);
+    }
+
     private void sendEmailsToReceiverAndSender(Transaction transaction, AccountResponseDTO sender, AccountResponseDTO receiver) {
         emailService.sendEmailImpl(transaction, sender.getAccountNumber(), sender.getCustomer(), true, sender.getBalance());
         emailService.sendEmailImpl(transaction, receiver.getAccountNumber(), receiver.getCustomer(), false, receiver.getBalance());
     }
 
-    private void updateBalances(Transaction transaction) {
+    private void updateAccountAmount(Transaction transaction) {
 
         Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
         Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);

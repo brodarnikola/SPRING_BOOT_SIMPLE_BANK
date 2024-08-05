@@ -54,7 +54,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
@@ -62,12 +61,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customer> findAllCustomers() {
         try {
-            List<Customer> customerList = customerRepository.findAll();
-            return customerList;
-
+            return customerRepository.findAll();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
             return List.of();
         }
     }

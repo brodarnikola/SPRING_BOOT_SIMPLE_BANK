@@ -13,7 +13,7 @@ class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 
-        ErrorResponse errorResponse = new ErrorResponse("Oh no! Something went wrong  "
+        ErrorResponse errorResponse = new ErrorResponse("Something went wrong  "
                 + System.lineSeparator()
                 + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

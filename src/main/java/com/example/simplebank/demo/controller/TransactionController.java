@@ -27,7 +27,7 @@ public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @GetMapping("/transaction/history/{customerId}")
-    public ResponseEntity<List<Transaction>> getTransactionHistory(@Valid @PathVariable Integer customerId,
+    public ResponseEntity<?> getTransactionHistory(@Valid @PathVariable Integer customerId,
                                                                    @RequestParam(required = false, name = FILTER_NAME) String filterValue) {
 
         logger.info("Received customerId: {}", customerId);
@@ -36,13 +36,19 @@ public class TransactionController {
         Optional<List<Transaction>> transactionHistory = Optional.empty();
         Optional<Customer> customerById = customerService.findCustomerById(customerId);
 
-        if (filterValue != null && customerById.isPresent()) {
-            transactionHistory = transactionService.getTransactionHistoryFiltered(customerById.get(), FILTER_NAME, filterValue);
-        } else if (customerById.isPresent()) {
-            transactionHistory = transactionService.getTransactionHistory(customerById.get());
-        }
+        if(customerById.isPresent()) {
 
-        return transactionHistory.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+            if (filterValue != null) {
+                transactionHistory = transactionService.getTransactionHistoryFiltered(customerById.get(), FILTER_NAME, filterValue);
+            } else {
+                transactionHistory = transactionService.getTransactionHistory(customerById.get());
+            }
+
+            return ResponseEntity.ok(transactionHistory);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/transaction")

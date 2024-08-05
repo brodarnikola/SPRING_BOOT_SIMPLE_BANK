@@ -43,12 +43,4 @@ public class Transaction {
         this.timestamp = timestamp;
     }
 
-    public Transaction(String senderAccountId, String receiverAccountId, BigDecimal amount, Currency currency, String message) {
-        this.senderAccount = senderAccountId;
-        this.receiverAccount = receiverAccountId;
-        this.amount = amount;
-        this.currency = currency;
-        this.message = message;
-        this.timestamp = new Date();
-    }
 }

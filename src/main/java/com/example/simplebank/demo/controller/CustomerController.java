@@ -17,7 +17,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @GetMapping("/customer/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Integer id) {
+    public ResponseEntity<?> getCustomerById(@PathVariable Integer id) {
         Optional<Customer> customer = customerService.findCustomerById(id);
         return customer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

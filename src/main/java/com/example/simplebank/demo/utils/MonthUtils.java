@@ -7,8 +7,6 @@ import java.util.Date;
 
 public class MonthUtils {
 
-
-
     public static Date getFirstDayOfMonth() {
 
         LocalDate firstDayOfLastMonth = LocalDate.now().minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
