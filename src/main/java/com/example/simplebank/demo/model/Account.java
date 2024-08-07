@@ -2,18 +2,13 @@ package com.example.simplebank.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
+import java.util.Objects;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "account")
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
 public class Account implements Serializable {
 
     @Id
@@ -36,6 +31,19 @@ public class Account implements Serializable {
 
     public Account() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(accountNumber, account.accountNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountNumber);
     }
 
     public synchronized void updateBalance(BigDecimal amount) {

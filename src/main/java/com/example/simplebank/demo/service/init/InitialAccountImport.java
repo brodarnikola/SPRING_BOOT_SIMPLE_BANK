@@ -99,6 +99,7 @@ public class InitialAccountImport implements Runnable {
 
 
     private Set<Account> getUniqueAccounts(List<Transaction> transactions) {
+        // this is code, to get unique accounts when using lombok library.. LomBook automatically builds for you getter, setter, constructors
 //        return transactions.stream()
 //                .flatMap(t -> Stream.of(
 //                        new Account(t.getSenderAccount()),

@@ -2,10 +2,6 @@ package com.example.simplebank.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-//import lombok.AllArgsConstructor;
-//import lombok.Builder;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,10 +9,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "transaction")
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Builder
 public class Transaction implements Serializable {
     @NotNull
     private String senderAccount;
