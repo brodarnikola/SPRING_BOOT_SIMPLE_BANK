@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmailImpl(Transaction transaction, String accountNumber, CustomerResponseDTO customer, boolean sent, BigDecimal currentBalance) {
+    public void sendEmailImpl(Transaction transaction, String accountNumber, Customer customer, boolean sent, BigDecimal currentBalance) {
 
         BigDecimal oldBalance;
         String addedTaken = sent ? "taken from" : "added to";

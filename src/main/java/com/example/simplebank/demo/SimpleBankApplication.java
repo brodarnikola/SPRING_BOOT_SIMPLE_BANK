@@ -1,6 +1,6 @@
 package com.example.simplebank.demo;
 
-import com.example.simplebank.demo.service.init.InitialImportService;
+import com.example.simplebank.demo.service.init.InitialAccountImport;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class SimpleBankApplication implements ApplicationRunner {
 
 	@Autowired
-	InitialImportService initialImportService;
+	InitialAccountImport initialAccountImport;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleBankApplication.class, args);
@@ -21,6 +21,6 @@ public class SimpleBankApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		initialImportService.run();
+		initialAccountImport.run();
 	}
 }

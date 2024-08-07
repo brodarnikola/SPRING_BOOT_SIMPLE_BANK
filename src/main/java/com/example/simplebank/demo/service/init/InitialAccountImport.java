@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class InitialImportService implements Runnable {
+public class InitialAccountImport implements Runnable {
 
     private static final int THREAD_POOL_SIZE = 10;
     private static final int NUMBER_OF_CUSTOMERS = 2;
@@ -47,7 +47,7 @@ public class InitialImportService implements Runnable {
 
         List<Transaction> transactions = importAllTransactions(FILE_PATH);
         List<Customer> customers = customerService.createDummyCustomers(NUMBER_OF_CUSTOMERS);
-        Set<Account> accounts = retrieveUniqueAccountsFromTransactions(transactions);
+        Set<Account> accounts = getUniqueAccounts(transactions);
 
         setCustomerAccounts(customers,accounts);
 
@@ -98,7 +98,7 @@ public class InitialImportService implements Runnable {
     }
 
 
-    private Set<Account> retrieveUniqueAccountsFromTransactions(List<Transaction> transactions) {
+    private Set<Account> getUniqueAccounts(List<Transaction> transactions) {
 //        return transactions.stream()
 //                .flatMap(t -> Stream.of(
 //                        new Account(t.getSenderAccount()),

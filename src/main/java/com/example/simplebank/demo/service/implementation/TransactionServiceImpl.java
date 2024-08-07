@@ -4,8 +4,6 @@ import com.example.simplebank.demo.dao.TransactionRepository;
 import com.example.simplebank.demo.model.Account;
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.model.Transaction;
-import com.example.simplebank.demo.model.dto.AccountResponseDTO;
-import com.example.simplebank.demo.model.dto.CustomerResponseDTO;
 import com.example.simplebank.demo.service.interfaces.AccountService;
 import com.example.simplebank.demo.service.interfaces.EmailService;
 import com.example.simplebank.demo.service.interfaces.TransactionService;
@@ -37,33 +35,12 @@ public class TransactionServiceImpl implements TransactionService {
     public Integer processTransaction(Transaction transaction) {
         Transaction trans = transactionRepository.save(transaction);
 
-        Optional<Account> senderAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
-        AccountResponseDTO sender = getAccountResponseDTO(senderAccount);
-        Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
-        AccountResponseDTO receiver = getAccountResponseDTO(receiverAccount);
+        Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
+        Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);
 
-        updateAccountAmount(transaction);
+        updateAccountAmount(transaction, sender, receiver);
         sendEmailsToReceiverAndSender(transaction, sender, receiver);
         return trans.getTransactionId();
-    }
-
-    private static AccountResponseDTO getAccountResponseDTO(Optional<Account> account) {
-        AccountResponseDTO sender = new AccountResponseDTO();
-        if (account.isPresent()) {
-            sender.setAccountId(account.get().getAccountId());
-            sender.setAccountNumber(account.get().getAccountNumber());
-            sender.setBalance(account.get().getBalance());
-            sender.setPastMonthTurnover(account.get().getPreviousMonthTurnover());
-
-            CustomerResponseDTO customerDTO = new CustomerResponseDTO();
-            customerDTO.setCustomerId(account.get().getCustomer().getCustomerId());
-            customerDTO.setName(account.get().getCustomer().getName());
-            customerDTO.setAddress(account.get().getCustomer().getAddress());
-            customerDTO.setEmail(account.get().getCustomer().getEmail());
-
-            sender.setCustomer(customerDTO);
-        }
-        return sender;
     }
 
     @Override
@@ -121,19 +98,14 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findBySenderAccount(account);
     }
 
-    private void sendEmailsToReceiverAndSender(Transaction transaction, AccountResponseDTO sender, AccountResponseDTO receiver) {
+    private void sendEmailsToReceiverAndSender(Transaction transaction, Account sender, Account receiver) {
+        setCustomerForAccount(sender);
+        setCustomerForAccount(receiver);
         emailService.sendEmailImpl(transaction, sender.getAccountNumber(), sender.getCustomer(), true, sender.getBalance());
         emailService.sendEmailImpl(transaction, receiver.getAccountNumber(), receiver.getCustomer(), false, receiver.getBalance());
     }
 
-    private void updateAccountAmount(Transaction transaction) {
-
-        Account sender = accountService.findByAccountNumber(transaction.getSenderAccount()).orElseGet(Account::new);
-        Account receiver = accountService.findByAccountNumber(transaction.getReceiverAccount()).orElseGet(Account::new);
-
-        setCustomerForAccount(sender);
-
-        setCustomerForAccount(receiver);
+    private void updateAccountAmount(Transaction transaction, Account sender, Account receiver) {
 
         sender.setBalance(sender.getBalance().subtract(transaction.getAmount()));
         receiver.setBalance(receiver.getBalance().add(transaction.getAmount()));
@@ -141,13 +113,13 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.save(receiver);
     }
 
-    private void setCustomerForAccount(Account sender) {
+    private void setCustomerForAccount(Account account) {
         Customer senderCustomer = new Customer();
-        senderCustomer.setCustomerId(sender.getCustomer().getCustomerId());
-        senderCustomer.setName(sender.getCustomer().getName());
-        senderCustomer.setAddress(sender.getCustomer().getAddress());
-        senderCustomer.setEmail(sender.getCustomer().getEmail());
-        sender.setCustomer(senderCustomer);
+        senderCustomer.setCustomerId(account.getCustomer().getCustomerId());
+        senderCustomer.setName(account.getCustomer().getName());
+        senderCustomer.setAddress(account.getCustomer().getAddress());
+        senderCustomer.setEmail(account.getCustomer().getEmail());
+        account.setCustomer(senderCustomer);
     }
 
 
