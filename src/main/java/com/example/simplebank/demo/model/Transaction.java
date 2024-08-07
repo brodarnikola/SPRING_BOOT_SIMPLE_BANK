@@ -2,23 +2,22 @@ package com.example.simplebank.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+//import lombok.AllArgsConstructor;
+//import lombok.Builder;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Transaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer transactionId;
+@Table(name = "transaction")
+//@Data
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Builder
+public class Transaction implements Serializable {
     @NotNull
     private String senderAccount;
     @NotNull
@@ -27,12 +26,15 @@ public class Transaction {
     private BigDecimal amount;
     @NotNull
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Currency currency;
     @NotNull
     private String message;
     @NotNull
     private Date timestamp;
+
+    public Transaction() {
+
+    }
 
     public Transaction(String senderAccountId, String receiverAccountId, BigDecimal amount, Currency currency, String message, Date timestamp) {
         this.senderAccount = senderAccountId;
@@ -42,5 +44,67 @@ public class Transaction {
         this.message = message;
         this.timestamp = timestamp;
     }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer transactionId;
+
+
+    public @NotNull String getSenderAccount() {
+        return senderAccount;
+    }
+
+    public void setSenderAccount(@NotNull String senderAccount) {
+        this.senderAccount = senderAccount;
+    }
+
+    public @NotNull String getReceiverAccount() {
+        return receiverAccount;
+    }
+
+    public void setReceiverAccount(@NotNull String receiverAccount) {
+        this.receiverAccount = receiverAccount;
+    }
+
+    public @NotNull BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(@NotNull BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public @NotNull Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(@NotNull Currency currency) {
+        this.currency = currency;
+    }
+
+    public @NotNull String getMessage() {
+        return message;
+    }
+
+    public void setMessage(@NotNull String message) {
+        this.message = message;
+    }
+
+    public @NotNull Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(@NotNull Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Integer getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Integer transactionId) {
+        this.transactionId = transactionId;
+    }
+
 
 }
