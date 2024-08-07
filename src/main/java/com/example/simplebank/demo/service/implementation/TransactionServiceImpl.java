@@ -39,7 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Optional<Account> senderAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
         AccountResponseDTO sender = getAccountResponseDTO(senderAccount);
-        Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getSenderAccount());
+        Optional<Account> receiverAccount = accountService.findByAccountNumber(transaction.getReceiverAccount());
         AccountResponseDTO receiver = getAccountResponseDTO(receiverAccount);
 
         updateAccountAmount(transaction);
