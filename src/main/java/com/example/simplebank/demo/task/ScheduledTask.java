@@ -21,7 +21,7 @@ public class ScheduledTask {
     // month
     // day of week
     // execute every 2 hours
-    @Scheduled(cron = "0 0 */2 * * *")
+    @Scheduled(cron = "*/10 * * * * *")
     public void task1() {
         accountService.getAllOriginalAccounts().forEach(account -> accountService.getLastMonthTurnOver(account, transactionService));
     }
