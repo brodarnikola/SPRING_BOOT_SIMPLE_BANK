@@ -3,7 +3,6 @@ package com.example.simplebank.demo.service.implementation;
 import com.example.simplebank.demo.dao.CustomerRepository;
 import com.example.simplebank.demo.model.Customer;
 import com.example.simplebank.demo.service.interfaces.CustomerService;
-import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,21 +29,21 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> createDummyCustomers(Integer numberOfCustomers) {
 
         try {
-            Faker faker = new Faker();
             List<Customer> customers = new ArrayList<>();
 
-            String email1 = "brodarnikola9@gmail.com";
-            String email2 = "brodarnikola@gmail.com";
+            String email1 = "brodarnikola60@gmail.com";
+            String email2 = "brodarnikola7@gmail.com";
+            String email3 = "brodarnikola54@gmail.com";
+
 
             for (int i = 0; i < numberOfCustomers; i++) {
                 Customer customer = new Customer();
-                customer.setName(faker.name().fullName());
-                customer.setAddress(faker.address().fullAddress());
-                if(i % 2 == 0) {
-                    customer.setEmail(email1);
-                }
-                else {
-                    customer.setEmail(email2);
+                if (i == 0) {
+                    createNewDummyCustomer("Michael Jordan", "Chicago, Augusta Senoe 23", email1, customer);
+                } else if (i == 1) {
+                    createNewDummyCustomer("Drazen Petrovic", "Zagreb, Krapinska ulica, 54", email2, customer);
+                } else {
+                    createNewDummyCustomer("Toni Kukoc", "Split, Rade koncara, 31", email3, customer);
                 }
                 customers.add(customer);
             }
@@ -56,6 +55,12 @@ public class CustomerServiceImpl implements CustomerService {
             System.out.println(e.getMessage());
             return null;
         }
+    }
+
+    private void createNewDummyCustomer(String name, String address, String email, Customer customer) {
+        customer.setName(name);
+        customer.setAddress(address);
+        customer.setEmail(email);
     }
 
     @Override

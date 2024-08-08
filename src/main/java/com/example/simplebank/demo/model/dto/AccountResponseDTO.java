@@ -13,14 +13,6 @@ public class AccountResponseDTO {
 
     }
 
-    public AccountResponseDTO(Integer accountId, String accountNumber, BigDecimal balance, BigDecimal pastMonthTurnover, CustomerResponseDTO customer) {
-        this.accountId = accountId;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.pastMonthTurnover = pastMonthTurnover;
-        this.customer = customer;
-    }
-
     public Integer getAccountId() {
         return accountId;
     }

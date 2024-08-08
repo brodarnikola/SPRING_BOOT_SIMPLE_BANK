@@ -10,13 +10,6 @@ public class CustomerResponseDTO {
 
     }
 
-    public CustomerResponseDTO(Integer customerId, String name, String address, String email) {
-        this.customerId = customerId;
-        this.name = name;
-        this.address = address;
-        this.email = email;
-    }
-
     public Integer getCustomerId() {
         return customerId;
     }

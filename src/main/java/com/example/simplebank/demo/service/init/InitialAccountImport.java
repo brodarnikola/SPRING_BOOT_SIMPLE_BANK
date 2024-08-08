@@ -17,10 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +28,7 @@ import java.util.stream.Stream;
 public class InitialAccountImport implements Runnable {
 
     private static final int THREAD_POOL_SIZE = 10;
-    private static final int NUMBER_OF_CUSTOMERS = 2;
+    private static final int NUMBER_OF_CUSTOMERS = 3;
     private static final String FILE_PATH = "src/main/resources/transactions";
 
     @Autowired
@@ -73,11 +70,11 @@ public class InitialAccountImport implements Runnable {
         }
         executor.shutdown();
 
-        List<Customer> customerList2 = customerService.findAllCustomers();
+//        List<Customer> customerList2 = customerService.findAllCustomers();
         accountService.saveAll(accounts);
-        List<AccountResponseDTO> accountDTOList = accountService.getAllAccounts() ;
-
-        List<Customer> customerList = customerService.findAllCustomers();
+//        List<AccountResponseDTO> accountDTOList = accountService.getAllAccounts() ;
+//
+//        List<Customer> customerList = customerService.findAllCustomers();
 
     }
 
@@ -102,12 +99,21 @@ public class InitialAccountImport implements Runnable {
 
 
     private Set<Account> getUniqueAccounts(List<Transaction> transactions) {
-        return transactions.stream()
-                .flatMap(t -> Stream.of(
-                        new Account(t.getSenderAccount()),
-                        new Account(t.getReceiverAccount())
-                ))
-                .collect(Collectors.toSet());
+        // this is code, to get unique accounts when using lombok library.. LomBook automatically builds for you getter, setter, constructors
+//        return transactions.stream()
+//                .flatMap(t -> Stream.of(
+//                        new Account(t.getSenderAccount()),
+//                        new Account(t.getReceiverAccount())
+//                ))
+//                .collect(Collectors.toSet());
+        Map<String, Account> accountMap = new HashMap<>();
+
+        for (Transaction t : transactions) {
+            accountMap.putIfAbsent(t.getSenderAccount(), new Account(t.getSenderAccount()));
+            accountMap.putIfAbsent(t.getReceiverAccount(), new Account(t.getReceiverAccount()));
+        }
+
+        return new HashSet<>(accountMap.values());
     }
 
     public List<Transaction> importAllTransactions(String csvFile) {
