@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class InitialAccountImport implements Runnable {
 
     private static final int THREAD_POOL_SIZE = 10;
-    private static final int NUMBER_OF_CUSTOMERS = 2;
+    private static final int NUMBER_OF_CUSTOMERS = 3;
     private static final String FILE_PATH = "src/main/resources/transactions";
 
     @Autowired
